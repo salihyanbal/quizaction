@@ -1,0 +1,11 @@
+FROM golang:alpine
+
+RUN go install github.com/mitranim/gow@latest
+
+WORKDIR /app
+
+COPY . .
+
+EXPOSE 8080
+
+CMD [ "gow", "-r=false", "run", "." ]

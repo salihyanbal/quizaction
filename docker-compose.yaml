@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  quizaction-db:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=quizaction
+    container_name: quizaction-db
+    ports:
+      - 5432:5432
+  quizaction-backend:
+    build:
+      context: ./server
+      dockerfile: "Dockerfile.dev"
+    container_name: quizaction-backend
+    environment:
+      SERVRE_PORT: 80
+      POSTGRES_CONNSTRING: postgresql://public:public@quizaction-db/quizaction?sslmode=disable
+    ports:
+      - 8080:80
+    depends_on:
+      - quizaction-db
+    volumes:
+      - ./server/:/app
+  quizaction-frontend:
+    build:
+      context: ./client
+      dockerfile: "Dockerfile.dev"
+    container_name: quizaction-frontend
+    environment:
+      PORT: 3000
+      NEXT_PUBLIC_BACKEND_URL: http://quizaction-backend:80
+    ports:
+      - 3000:3000
+    volumes:
+      - ./client/:/app

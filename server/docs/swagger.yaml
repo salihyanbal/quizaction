@@ -1,0 +1,18 @@
+host: localhost:8080
+info:
+  contact: {}
+  description: Quizaction Server.
+  title: Quizaction Server
+  version: "0.0"
+paths:
+  /hello:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Hello
+      tags:
+      - Others
+swagger: "2.0"
