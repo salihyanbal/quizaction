@@ -15,7 +15,7 @@ services:
       dockerfile: "Dockerfile.dev"
     container_name: quizaction-backend
     environment:
-      SERVRE_PORT: 80
+      SERVER_PORT: 80
       POSTGRES_CONNSTRING: postgresql://public:public@quizaction-db/quizaction?sslmode=disable
     ports:
       - 8080:80
@@ -30,7 +30,8 @@ services:
     container_name: quizaction-frontend
     environment:
       PORT: 3000
-      NEXT_PUBLIC_BACKEND_URL: http://quizaction-backend:80
+      BACKEND_URL: http://quizaction-backend:80
+      NEXT_PUBLIC_BACKEND_URL: http://localhost:8080
     ports:
       - 3000:3000
     volumes:

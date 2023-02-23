@@ -1,11 +1,26 @@
 // "use client"
 import { GetServerSideProps } from "next"
 import Head from "next/head"
+import { useEffect, useState } from "react"
 import { GripVertical } from "tabler-icons-react"
 
 type HelloResponse = { message: string }
 
+const fetchFromClient = async (): Promise<HelloResponse> => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/hello`)
+  const data = await res.json()
+  return data as HelloResponse
+}
+
 function Home({ data }: { data: HelloResponse }) {
+  const [hello, setHello] = useState<string>("")
+
+  useEffect(() => {
+    fetchFromClient()
+      .then((res) => setHello(res.message))
+      .catch(() => setHello("Failed to fetch from client :("))
+  }, [])
+
   return (
     <>
       <Head>
@@ -31,6 +46,7 @@ function Home({ data }: { data: HelloResponse }) {
               </h1>
               <p>{data.message}</p>
             </div>
+            <small className="rotate-45 opacity-25">{hello}</small>
           </div>
         </div>
       </main>
@@ -39,7 +55,7 @@ function Home({ data }: { data: HelloResponse }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+  const backendUrl = process.env.BACKEND_URL
   const res = await fetch(`${backendUrl}/hello`)
   const data = (await res.json()) as HelloResponse
   return {
