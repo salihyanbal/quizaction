@@ -1,3 +1,41 @@
+definitions:
+  main.HelloResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  user.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  user.GetUserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      roles:
+        items:
+          $ref: '#/definitions/user.Role'
+        type: array
+      username:
+        type: string
+    type: object
+  user.Role:
+    enum:
+    - admin
+    - member
+    - guest
+    type: string
+    x-enum-varnames:
+    - Admin
+    - Member
+    - Guest
 host: localhost:8080
 info:
   contact: {}
@@ -7,12 +45,54 @@ info:
 paths:
   /hello:
     get:
+      operationId: hello
       produces:
       - application/json
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/main.HelloResponse'
       summary: Hello
       tags:
       - Others
+  /users:
+    post:
+      operationId: create-user
+      parameters:
+      - description: New User Info
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/user.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+      summary: Create User
+      tags:
+      - User
+  /users/{username}:
+    get:
+      operationId: get-user
+      parameters:
+      - description: Username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.GetUserResponse'
+      summary: Get User
+      tags:
+      - User
+schemes:
+- http
 swagger: "2.0"
